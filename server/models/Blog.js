@@ -12,10 +12,27 @@ const blogSchema = new mongoose.Schema(
       required: true,
     },
 
+    image: {
+      type: String,
+      default: "",
+    },
+
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
+    views: {
+      type: Number,
+      default: 0,
     },
   },
   {

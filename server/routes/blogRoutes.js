@@ -1,5 +1,6 @@
 import express from "express";
 import protect from "../middleware/authMiddleware.js";
+import upload from "../middleware/uploadMiddleware.js";
 
 import {
   createBlog,
@@ -7,15 +8,19 @@ import {
   getBlogById,
   updateBlog,
   deleteBlog,
+  toggleLike,
 } from "../controllers/blogController.js";
 
 const router = express.Router();
 
+// Public Routes
 router.get("/", getBlogs);
 router.get("/:id", getBlogById);
 
-router.post("/", protect, createBlog);
+// Protected Routes
+router.post("/", protect, upload.single("image"), createBlog);
 router.put("/:id", protect, updateBlog);
+router.put("/:id/like", protect, toggleLike);
 router.delete("/:id", protect, deleteBlog);
 
 export default router;

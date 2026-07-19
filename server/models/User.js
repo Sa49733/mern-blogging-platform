@@ -17,6 +17,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
+    // Saved Blogs
+    bookmarks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Blog",
+      },
+    ],
   },
   {
     timestamps: true,
