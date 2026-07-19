@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 import { AuthContext } from "../context/AuthContext";
@@ -7,20 +7,29 @@ function Navbar() {
   const navigate = useNavigate();
   const { user: currentUser, setUser } = useContext(AuthContext);
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
+    setMenuOpen(false);
     navigate("/login");
   };
 
+  const closeMenu = () => setMenuOpen(false);
+
   return (
     <nav
-      className="sticky top-0 z-20 border-b transition-colors duration-300
-        bg-white/80 backdrop-blur-md border-black/5
-        dark:bg-[#0A0B10]/80 dark:border-white/10"
+      className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md
+      border-black/5 dark:bg-[#0A0B10]/80 dark:border-white/10"
     >
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5">
+        {/* Logo */}
+        <Link
+          to="/"
+          className="flex items-center gap-2.5"
+          onClick={closeMenu}
+        >
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#7C5CFC] to-[#4F7FFF] flex items-center justify-center">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
               <path
@@ -32,17 +41,16 @@ function Navbar() {
             </svg>
           </div>
 
-          <span className="font-semibold text-[#14151C] dark:text-white tracking-tight">
+          <span className="font-semibold text-[#14151C] dark:text-white">
             Blogosphere
           </span>
         </Link>
 
-        <div className="flex items-center gap-1 sm:gap-2.5">
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center gap-2">
           <Link
             to="/"
-            className="hidden sm:inline-flex items-center h-9 px-3 rounded-lg text-sm font-medium transition-colors
-              text-slate-600 hover:bg-black/5
-              dark:text-[#8B8D98] dark:hover:bg-white/5"
+            className="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5"
           >
             Home
           </Link>
@@ -51,61 +59,46 @@ function Navbar() {
             <>
               <Link
                 to="/create-blog"
-                className="hidden sm:inline-flex items-center h-9 px-4 rounded-lg text-sm font-medium
-                  bg-gradient-to-r from-[#7C5CFC] to-[#4F7FFF] text-white
-                  hover:brightness-110 active:brightness-95 transition-all
-                  shadow-[0_4px_16px_-4px_rgba(124,92,252,0.5)]"
+                className="px-4 py-2 rounded-lg text-white bg-gradient-to-r from-[#7C5CFC] to-[#4F7FFF]"
               >
                 New Post
               </Link>
 
               <Link
                 to="/saved"
-                className="hidden sm:inline-flex items-center h-9 px-3 rounded-lg text-sm font-medium transition-colors
-                  text-slate-600 hover:bg-black/5
-                  dark:text-[#8B8D98] dark:hover:bg-white/5"
+                className="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5"
               >
                 🔖 Saved
               </Link>
 
               <Link
                 to="/profile"
-                className="hidden sm:inline-flex items-center h-9 px-3 rounded-lg text-sm font-medium transition-colors
-                  text-slate-600 hover:bg-black/5
-                  dark:text-[#8B8D98] dark:hover:bg-white/5"
+                className="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5"
               >
-                Profile
+                👤 Profile
               </Link>
             </>
           )}
 
           {currentUser ? (
             <button
-              type="button"
               onClick={handleLogout}
-              className="h-9 px-3.5 rounded-lg text-sm font-medium transition-colors
-                text-slate-600 hover:bg-black/5
-                dark:text-[#8B8D98] dark:hover:bg-white/5"
+              className="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5"
             >
-              Log out
+              Logout
             </button>
           ) : (
             <>
               <Link
                 to="/login"
-                className="h-9 px-3.5 rounded-lg text-sm font-medium transition-colors flex items-center
-                  text-slate-600 hover:bg-black/5
-                  dark:text-[#8B8D98] dark:hover:bg-white/5"
+                className="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5"
               >
-                Sign in
+                Login
               </Link>
 
               <Link
                 to="/register"
-                className="hidden sm:inline-flex items-center h-9 px-4 rounded-lg text-sm font-medium
-                  bg-gradient-to-r from-[#7C5CFC] to-[#4F7FFF] text-white
-                  hover:brightness-110 active:brightness-95 transition-all
-                  shadow-[0_4px_16px_-4px_rgba(124,92,252,0.5)]"
+                className="px-4 py-2 rounded-lg text-white bg-gradient-to-r from-[#7C5CFC] to-[#4F7FFF]"
               >
                 Register
               </Link>
@@ -114,7 +107,90 @@ function Navbar() {
 
           <ThemeToggle />
         </div>
+
+        {/* Mobile Right Side */}
+        <div className="flex md:hidden items-center gap-3">
+          <ThemeToggle />
+
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-3xl text-[#14151C] dark:text-white"
+          >
+            {menuOpen ? "✕" : "☰"}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Menu */}
+      {menuOpen && (
+        <div className="md:hidden border-t bg-white dark:bg-[#0A0B10] dark:border-white/10">
+          <div className="flex flex-col py-2">
+
+            <Link
+              to="/"
+              onClick={closeMenu}
+              className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-white/10"
+            >
+              🏠 Home
+            </Link>
+
+            {currentUser && (
+              <>
+                <Link
+                  to="/create-blog"
+                  onClick={closeMenu}
+                  className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-white/10"
+                >
+                  ➕ New Post
+                </Link>
+
+                <Link
+                  to="/saved"
+                  onClick={closeMenu}
+                  className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-white/10"
+                >
+                  🔖 Saved
+                </Link>
+
+                <Link
+                  to="/profile"
+                  onClick={closeMenu}
+                  className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-white/10"
+                >
+                  👤 Profile
+                </Link>
+
+                <button
+                  onClick={handleLogout}
+                  className="text-left px-4 py-3 hover:bg-gray-100 dark:hover:bg-white/10"
+                >
+                  🚪 Logout
+                </button>
+              </>
+            )}
+
+            {!currentUser && (
+              <>
+                <Link
+                  to="/login"
+                  onClick={closeMenu}
+                  className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-white/10"
+                >
+                  Login
+                </Link>
+
+                <Link
+                  to="/register"
+                  onClick={closeMenu}
+                  className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-white/10"
+                >
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
