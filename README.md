@@ -349,12 +349,5 @@ GitHub
 
 https://github.com/Sa49733
 
-LinkedIn
 
-(Add your LinkedIn URL here)
 
----
-
-# ⭐ Support
-
-If you like this project, consider giving it a ⭐ on GitHub.
